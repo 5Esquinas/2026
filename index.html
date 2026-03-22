@@ -596,7 +596,43 @@ function calcSumif(deptos,socio){
 
 function renderAll(){const d=DATA[currentMonth];if(!d)return;rAnalisis(d);rDeptos(d);rGastos(d);rSocios(d);rDeudores(d);rTrimestral();}
 
-function rDeptosGrid(id,deptos){const el=document.getElementById(id);if(!el)return;el.innerHTML=deptos.map(dep=>{const est=getEstado(dep);const hD=dep.adeuda&&dep.adeuda!=='-'&&dep.adeuda>0;const hC=typeof dep.importe==='number'&&dep.importe>0;return`<div class="depto-card ${est.cls}" onclick="abrirEditorDepto('${dep.n}','${currentMonth}')" style="cursor:pointer"><div class="depto-dot ${est.cls}"></div><div class="depto-num">${dep.n}</div><div class="depto-alq">${typeof dep.alquiler==='number'?fmtNum(dep.alquiler):'—'}</div>${hC?`<div class="depto-cobrado">↓${fmtNum(dep.importe)}</div>`:''} ${hD?`<div class="depto-adeuda">⚠${fmtNum(dep.adeuda)}</div>`:''} ${destBadge(dep.destLabel||dep.dest)||`<span class="dest-badge vacio">${est.label}</span>`}</div>`;}).join('');}
+function rDeptosGrid(id,deptos){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.innerHTML=deptos.map(dep=>{
+    const est=getEstado(dep);
+    const adeudaNum = (dep.adeuda&&dep.adeuda!=='-'&&dep.adeuda>0) ? dep.adeuda : 0;
+    const imp1 = typeof dep.importe==='number'&&dep.importe>0 ? dep.importe : 0;
+    const imp2 = typeof dep.importe2==='number'&&dep.importe2>0 ? dep.importe2 : 0;
+    const dest1 = dep.dest&&dep.dest!=='-' ? dep.dest : '';
+    const dest2 = dep.dest2&&dep.dest2!=='-' ? dep.dest2 : '';
+
+    // Status color
+    const stClr = est.cls==='pagado'?'var(--accent2)':est.cls==='deuda'?'var(--accent3)':'var(--muted)';
+
+    return `<div class="depto-card ${est.cls}" onclick="abrirEditorDepto('${dep.n}','${currentMonth}')" style="cursor:pointer;padding:8px 7px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px">${dep.n}</div>
+      <!-- ROW 1: estado | alquiler | deuda -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:4px">
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:${stClr};line-height:1.2">${est.label}</div>
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--text);line-height:1.2;text-align:center">${typeof dep.alquiler==='number'?('$'+Math.round(dep.alquiler/1000)+'k'):'—'}</div>
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:${adeudaNum>0?'var(--accent3)':'var(--muted)'};line-height:1.2;text-align:right">${adeudaNum>0?('⚠$'+Math.round(adeudaNum/1000)+'k'):'—'}</div>
+      </div>
+      <!-- ROW 2: cobrado1 | dest1 -->
+      ${imp1>0?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--accent2)">↓$${Math.round(imp1/1000)}k</div>
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:${dest1.includes('DANI')?'var(--dani)':dest1.includes('FEDE')?'var(--fede)':dest1.includes('MACHE')?'var(--mache)':dest1.includes('EFECTIVO')?'var(--efectivo)':'var(--muted)'};text-align:right">${dest1||'—'}</div>
+      </div>`:''}
+      <!-- ROW 3: cobrado2 | dest2 -->
+      ${imp2>0?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--accent2)">↓$${Math.round(imp2/1000)}k</div>
+        <div style="font-size:8px;font-family:'DM Mono',monospace;color:${dest2.includes('DANI')?'var(--dani)':dest2.includes('FEDE')?'var(--fede)':dest2.includes('MACHE')?'var(--mache)':dest2.includes('EFECTIVO')?'var(--efectivo)':'var(--muted)'};text-align:right">${dest2||'—'}</div>
+      </div>`:''}
+      <!-- OBS -->
+      ${dep.obs?`<div style="font-size:7px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${dep.obs}</div>`:''}
+    </div>`;
+  }).join('');
+}
 
 function rAnalisis(d){const r=d.resumen;const vacios=d.deptos.filter(x=>x.estado==='V'||x.estado==='E').length;const deud=d.deptos.filter(x=>x.estado==='D'||(x.adeuda&&x.adeuda!=='-'&&x.adeuda>0)).length;document.getElementById('stats-grid').innerHTML=`<div class="stat-card green"><div class="stat-label">Cobrado</div><div class="stat-value green">${fmtNum(r.cobrado)}</div><div class="stat-meta">ingresos del mes</div></div><div class="stat-card red"><div class="stat-label">Gastos</div><div class="stat-value red">${fmtNum(r.totalGastos)}</div><div class="stat-meta">egresos del mes</div></div><div class="stat-card gold"><div class="stat-label">Saldo</div><div class="stat-value gold">${fmtNum(r.saldoDelMes)}</div><div class="stat-meta">para distribuir</div></div><div class="stat-card blue"><div class="stat-label">Vacíos</div><div class="stat-value blue">${vacios}</div><div class="stat-meta">${deud} con deuda</div></div>`;
 const meses=['ENERO','FEBRERO','MARZO'];const maxV=Math.max(...meses.map(m=>DATA[m].resumen.cobrado));document.getElementById('tri-chart').innerHTML=meses.map(m=>{const mr=DATA[m].resumen;const eH=Math.round(mr.cobrado/maxV*80);const sH=Math.round(mr.totalGastos/maxV*80);const lH=Math.round(mr.saldoDelMes/maxV*80);return`<div class="tri-group"><div class="tri-bars-inner"><div class="tri-bar entrada" style="height:${eH}px"></div><div class="tri-bar salida" style="height:${sH}px"></div><div class="tri-bar saldo" style="height:${lH}px"></div></div><div class="tri-mes">${m.substring(0,3)}</div></div>`;}).join('');
@@ -668,7 +704,7 @@ function registrarPago(){
   const mes=document.getElementById('pago-mes').value;
   const deptoN=document.getElementById('pago-depto').value;
   const fecha=document.getElementById('pago-fecha').value;
-  const adeuda=parseInt(document.getElementById('pago-adeuda').value)||0;
+  const adeudaManual=document.getElementById('pago-adeuda').value;
   const obs=document.getElementById('pago-obs').value;
 
   // Collect all parts
@@ -695,21 +731,29 @@ function registrarPago(){
   const dep=DATA[mes].deptos.find(d=>d.n===deptoN);
   if(!dep){showToast('Depto no encontrado',true);return;}
 
-  // Build dest string and update dep
-  const destStr=partes.map(p=>p.dest).join('/');
-  dep.importe=(typeof dep.importe==='number'?dep.importe:0)+totalPago;
-  if(fecha) dep.fecha=new Date(fecha).toLocaleDateString('es-AR');
-  dep.dest=destStr;
-  // Store individual parts for SUMIF
-  dep.importe=totalPago; // total
+  // Auto-subtract from existing deuda
+  let nuevaAdeuda;
+  if(adeudaManual !== '') {
+    // Si llenaron deuda restante manualmente, usar ese valor
+    nuevaAdeuda = parseInt(adeudaManual) || 0;
+  } else {
+    // Auto: restar lo cobrado de la deuda actual
+    const deudaActual = (dep.adeuda && dep.adeuda !== '-') ? (parseInt(dep.adeuda)||0) : 0;
+    nuevaAdeuda = Math.max(0, deudaActual - totalPago);
+  }
+
+  // Store parts
   if(partes[0]) { dep.dest=partes[0].dest; dep.importe=partes[0].importe; }
   if(partes[1]) { dep.dest2=partes[1].dest; dep.importe2=partes[1].importe; }
+  else { dep.dest2=''; dep.importe2=0; }
   if(partes[2]) { dep.dest3=partes[2].dest; dep.importe3=partes[2].importe; }
-  // Combined dest label
+  else { dep.dest3=''; dep.importe3=0; }
+
   dep.destLabel=partes.map(p=>p.dest).join('/');
   dep.importeTotal=totalPago;
-  dep.adeuda=adeuda>0?adeuda:'-';
-  dep.estado=adeuda>0?'D':'';
+  dep.adeuda=nuevaAdeuda>0?nuevaAdeuda:'-';
+  dep.estado=nuevaAdeuda>0?'D':'';
+  if(fecha) dep.fecha=new Date(fecha).toLocaleDateString('es-AR');
   if(obs) dep.obs=obs;
 
   DATA[mes].resumen.cobrado+=totalPago;
@@ -718,8 +762,9 @@ function registrarPago(){
   Object.keys(DATA[mes].resumen.liq).forEach(s=>{DATA[mes].resumen.liq[s].liq=lc[s];});
 
   const histDesc=partes.map(p=>`${p.dest}: ${fmtNum(p.importe)}`).join(' + ');
+  const deudaMsg = nuevaAdeuda>0 ? ` | Deuda restante: ${fmtNum(nuevaAdeuda)}` : ' | Deuda saldada ✓';
   saveData();
-  addHist({tipo:'pago',desc:`Depto ${deptoN} → ${histDesc}`,amount:totalPago,mes});
+  addHist({tipo:'pago',desc:`Depto ${deptoN} → ${histDesc}${deudaMsg}`,amount:totalPago,mes});
 
   // Reset form
   document.getElementById('pago-importe-1').value='';
@@ -727,7 +772,6 @@ function registrarPago(){
   document.getElementById('pago-importe-3').value='';
   document.getElementById('pago-adeuda').value='';
   document.getElementById('pago-obs').value='';
-  // Hide optional parts
   ['2','3'].forEach(n=>{
     const f=document.getElementById('fields-'+n);
     const b=document.getElementById('toggle-'+n);
@@ -738,7 +782,11 @@ function registrarPago(){
   updateSummary();
   rPagosLog();
   renderAll();
-  showToast(`✓ ${fmtNum(totalPago)} registrado en ${deptoN}`);
+
+  const toast = nuevaAdeuda>0
+    ? `✓ ${fmtNum(totalPago)} registrado — Deuda restante: ${fmtNum(nuevaAdeuda)}`
+    : `✓ ${fmtNum(totalPago)} registrado — ¡Deuda saldada!`;
+  showToast(toast);
 }
 
 function registrarGasto(){const mes=document.getElementById('gasto-mes').value;const tipo=document.getElementById('gasto-tipo').value;const importe=parseInt(document.getElementById('gasto-importe').value);const nota=document.getElementById('gasto-nota').value;const otroD=document.getElementById('gasto-otro-desc').value;if(!importe||importe<=0){showToast('Importe inválido',true);return;}if(tipo!=='otro')DATA[mes].resumen.gastos[tipo]=(DATA[mes].resumen.gastos[tipo]||0)+importe;DATA[mes].resumen.totalGastos+=importe;DATA[mes].resumen.saldoDelMes=DATA[mes].resumen.cobrado-DATA[mes].resumen.totalGastos;const lc=calcLiq(mes,DATA[mes].resumen);Object.keys(DATA[mes].resumen.liq).forEach(s=>{DATA[mes].resumen.liq[s].liq=lc[s];});saveData();addHist({tipo:'gasto',desc:`Gasto: ${tipo==='otro'?otroD:tipo}${nota?' — '+nota:''}`,amount:-importe,mes});document.getElementById('gasto-importe').value='';document.getElementById('gasto-nota').value='';document.getElementById('gasto-otro-desc').value='';rGastosLog();renderAll();showToast(`✓ Gasto ${fmtNum(importe)} registrado`);}
