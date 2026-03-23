@@ -661,38 +661,38 @@ function rDeptosGrid(id,deptos){
 
     // HEADER: depto | alquiler | luz
     html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:4px;align-items:center">';
-    html+='<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--muted);letter-spacing:1px">'+dep.n+'</div>';
-    html+='<div style="font-family:\'DM Serif Display\',serif;font-size:12px;color:var(--text);text-align:center">'+alqStr+'</div>';
-    html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent4);text-align:right">'+luzStr+'</div>';
+    html+='<div style="font-family:monospace;font-size:9px;color:var(--muted);letter-spacing:1px">'+dep.n+'</div>';
+    html+='<div style="font-family:serif;font-size:12px;color:var(--text);text-align:center">'+alqStr+'</div>';
+    html+='<div style="font-size:8px;font-family:monospace;color:var(--accent4);text-align:right">'+luzStr+'</div>';
     html+='</div>';
 
     // ROW 1: estado | deuda
     html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px">';
-    html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+stClr+';line-height:1.2">'+est.label+'</div>';
-    html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+deudaColor+';line-height:1.2;text-align:right">'+deudaStr+'</div>';
+    html+='<div style="font-size:8px;font-family:monospace;color:'+stClr+';line-height:1.2">'+est.label+'</div>';
+    html+='<div style="font-size:8px;font-family:monospace;color:'+deudaColor+';line-height:1.2;text-align:right">'+deudaStr+'</div>';
     html+='</div>';
 
     // ROW 2: cobrado1 | fecha | dest1
     if(imp1>0){
       html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px">';
-      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent2)">↓$'+Math.round(imp1/1000)+'k</div>';
-      html+='<div style="font-size:7px;font-family:\'DM Mono\',monospace;color:var(--muted);text-align:center">'+(dep.fecha||'')+'</div>';
-      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+dClr(dest1)+';text-align:right">'+(dest1||'—')+'</div>';
+      html+='<div style="font-size:8px;font-family:monospace;color:var(--accent2)">↓$'+Math.round(imp1/1000)+'k</div>';
+      html+='<div style="font-size:7px;font-family:monospace;color:var(--muted);text-align:center">'+(dep.fecha||'')+'</div>';
+      html+='<div style="font-size:8px;font-family:monospace;color:'+dClr(dest1)+';text-align:right">'+(dest1||'—')+'</div>';
       html+='</div>';
     }
 
     // ROW 3: cobrado2 | fecha2 | dest2
     if(imp2>0){
       html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px">';
-      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent2)">↓$'+Math.round(imp2/1000)+'k</div>';
-      html+='<div style="font-size:7px;font-family:\'DM Mono\',monospace;color:var(--muted);text-align:center">'+(dep.fecha2||dep.fecha||'')+'</div>';
-      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+dClr(dest2)+';text-align:right">'+(dest2||'—')+'</div>';
+      html+='<div style="font-size:8px;font-family:monospace;color:var(--accent2)">↓$'+Math.round(imp2/1000)+'k</div>';
+      html+='<div style="font-size:7px;font-family:monospace;color:var(--muted);text-align:center">'+(dep.fecha2||dep.fecha||'')+'</div>';
+      html+='<div style="font-size:8px;font-family:monospace;color:'+dClr(dest2)+';text-align:right">'+(dest2||'—')+'</div>';
       html+='</div>';
     }
 
     // OBS
     if(dep.obs){
-      html+='<div style="font-size:7px;color:var(--muted);font-family:\'DM Mono\',monospace;margin-top:2px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dep.obs+'</div>';
+      html+='<div style="font-size:7px;color:var(--muted);font-family:monospace;margin-top:2px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dep.obs+'</div>';
     }
 
     html+='</div>';
@@ -943,41 +943,85 @@ function abrirEditorDepto(n, mes) {
 function loadEstadosGrid() {
   const mes = document.getElementById('est-mes').value;
   const deptos = DATA[mes] ? DATA[mes].deptos : [];
-  
+
   // Summary
-  const vacios = deptos.filter(d=>d.estado==='V'||d.estado==='E').length;
-  const deuda  = deptos.filter(d=>d.estado==='D'||(d.adeuda&&d.adeuda!=='-'&&d.adeuda>0)).length;
-  const pagados= deptos.filter(d=>getEstado(d).cls==='pagado').length;
+  const vacios  = deptos.filter(d=>d.estado==='V'||d.estado==='E').length;
+  const deuda   = deptos.filter(d=>d.estado==='D'||(d.adeuda&&d.adeuda!=='-'&&d.adeuda>0)).length;
+  const pagados = deptos.filter(d=>getEstado(d).cls==='pagado').length;
   const sumEl = document.getElementById('estados-summary');
-  if(sumEl) sumEl.innerHTML = `
-    <div><div class="summary-mini-val" style="color:var(--accent2)">${pagados}</div><div class="summary-mini-label">PAGADOS</div></div>
-    <div><div class="summary-mini-val" style="color:var(--accent3)">${deuda}</div><div class="summary-mini-label">DEUDA</div></div>
-    <div><div class="summary-mini-val" style="color:var(--muted)">${vacios}</div><div class="summary-mini-label">VACÍOS</div></div>`;
+  if(sumEl) sumEl.innerHTML =
+    '<div><div class="summary-mini-val" style="color:var(--accent2)">'+pagados+'</div><div class="summary-mini-label">PAGADOS</div></div>'+
+    '<div><div class="summary-mini-val" style="color:var(--accent3)">'+deuda+'</div><div class="summary-mini-label">DEUDA</div></div>'+
+    '<div><div class="summary-mini-val" style="color:var(--muted)">'+vacios+'</div><div class="summary-mini-label">VACÍOS</div></div>';
 
   const el = document.getElementById('estados-grid-admin');
   if(!el) return;
-  
-  el.innerHTML = '<div class="est-edit-hint">↓ TOCÁ UN DEPTO PARA EDITAR ↓</div>'
-    + '<div class="estados-grid-adm">'
-    + deptos.map(dep => {
+
+  // Use same card style as main grid but with selected highlight
+  // Temporarily override currentMonth for the grid
+  const prevMonth = currentMonth;
+  currentMonth = mes;
+
+  el.innerHTML = '<div class="est-edit-hint" style="font-family:monospace;font-size:8px;color:var(--muted);letter-spacing:2px;text-align:center;margin-bottom:8px">TOCÁ UN DEPTO PARA EDITAR</div>'
+    + '<div class="depto-grid">'
+    + deptos.map(function(dep){
         const est = getEstado(dep);
         const isSelected = editingDepto && editingDepto.n === dep.n && editingMes === mes;
-        const destShort = dep.dest && dep.dest !== '-' ? dep.dest.split('/')[0] : '';
-        return `
-          <div class="est-card-adm ${est.cls}${isSelected?' selected':''}" onclick="selectDepto('${dep.n}','${mes}')">
-            <div class="ec-num">${dep.n}</div>
-            <div class="ec-alq">${typeof dep.alquiler==='number'?('$'+Math.round(dep.alquiler/1000)+'k'):'—'}</div>
-            <div class="ec-badge">${
-              est.cls==='pagado' ? (destShort||'OK') :
-              est.cls==='deuda'  ? '⚠ DEUDA' :
-              est.cls==='vacio'  ? 'VACÍO' : '—'
-            }</div>
-          </div>`;
+        const adeudaNum = (dep.adeuda&&dep.adeuda!=='-'&&dep.adeuda>0) ? dep.adeuda : 0;
+        const imp1 = typeof dep.importe==='number'&&dep.importe>0 ? dep.importe : 0;
+        const imp2 = typeof dep.importe2==='number'&&dep.importe2>0 ? dep.importe2 : 0;
+        const dest1 = dep.dest&&dep.dest!=='-' ? dep.dest : '';
+        const dest2 = dep.dest2&&dep.dest2!=='-' ? dep.dest2 : '';
+        const luzVal = typeof dep.luz==='number'&&dep.luz>0 ? dep.luz : 0;
+        const stClr = est.cls==='pagado'?'var(--accent2)':est.cls==='deuda'?'var(--accent3)':'var(--muted)';
+        function dClr(c){return c.includes('DANI')?'var(--dani)':c.includes('FEDE')?'var(--fede)':c.includes('MACHE')?'var(--mache)':c.includes('EFECTIVO')?'var(--efectivo)':'var(--muted)';}
+        const alqStr = typeof dep.alquiler==='number'?('$'+Math.round(dep.alquiler/1000)+'k'):'—';
+        const luzStr = luzVal>0?('⚡$'+Math.round(luzVal/1000)+'k'):'';
+        const deudaStr = adeudaNum>0?('⚠$'+Math.round(adeudaNum/1000)+'k'):'—';
+        const deudaColor = adeudaNum>0?'var(--accent3)':'var(--muted)';
+        const selBorder = isSelected ? 'border-color:var(--accent);background:rgba(200,169,110,.08);' : '';
+
+        let h = '<div class="depto-card '+est.cls+'" onclick="selectDepto(this)" data-n="'+dep.n+'" data-mes="'+mes+'" style="cursor:pointer;padding:8px 7px;'+selBorder+'">';
+        h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:4px;align-items:center">';
+        h += '<div style="font-family:monospace;font-size:9px;color:var(--muted);letter-spacing:1px">'+dep.n+'</div>';
+        h += '<div style="font-family:serif;font-size:12px;color:var(--text);text-align:center">'+alqStr+'</div>';
+        h += '<div style="font-size:8px;font-family:monospace;color:var(--accent4);text-align:right">'+luzStr+'</div>';
+        h += '</div>';
+        h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px">';
+        h += '<div style="font-size:8px;font-family:monospace;color:'+stClr+';line-height:1.2">'+est.label+'</div>';
+        h += '<div style="font-size:8px;font-family:monospace;color:'+deudaColor+';line-height:1.2;text-align:right">'+deudaStr+'</div>';
+        h += '</div>';
+        if(imp1>0){
+          h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px">';
+          h += '<div style="font-size:8px;font-family:monospace;color:var(--accent2)">↓$'+Math.round(imp1/1000)+'k</div>';
+          h += '<div style="font-size:7px;font-family:monospace;color:var(--muted);text-align:center">'+(dep.fecha||'')+'</div>';
+          h += '<div style="font-size:8px;font-family:monospace;color:'+dClr(dest1)+';text-align:right">'+(dest1||'—')+'</div>';
+          h += '</div>';
+        }
+        if(imp2>0){
+          h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px">';
+          h += '<div style="font-size:8px;font-family:monospace;color:var(--accent2)">↓$'+Math.round(imp2/1000)+'k</div>';
+          h += '<div style="font-size:7px;font-family:monospace;color:var(--muted);text-align:center">'+(dep.fecha2||dep.fecha||'')+'</div>';
+          h += '<div style="font-size:8px;font-family:monospace;color:'+dClr(dest2)+';text-align:right">'+(dest2||'—')+'</div>';
+          h += '</div>';
+        }
+        if(dep.obs){
+          h += '<div style="font-size:7px;color:var(--muted);font-family:monospace;margin-top:2px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dep.obs+'</div>';
+        }
+        h += '</div>';
+        return h;
       }).join('')
     + '</div>';
+
+  currentMonth = prevMonth;
 }
 
-function selectDepto(n, mes) {
+
+function selectDepto(elOrN, mes) {
+  let n, m;
+  if(typeof elOrN === 'string') { n = elOrN; m = mes; }
+  else { n = elOrN.getAttribute('data-n'); m = elOrN.getAttribute('data-mes'); }
+  mes = m;
   const dep = DATA[mes].deptos.find(d=>d.n===n);
   if(!dep) return;
   editingDepto = dep;
