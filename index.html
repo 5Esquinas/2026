@@ -489,8 +489,8 @@ tr:last-child td{border-bottom:none}
           EDITANDO <span id="edit-depto-num" style="color:var(--text);font-size:12px"></span>
         </div>
 
-        <!-- FILA 1: Estado | Alquiler | Deuda -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+        <!-- FILA 1: Estado | Alquiler | Luz -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
           <div class="form-group" style="margin:0">
             <label class="form-label">Estado</label>
             <select class="form-select" id="edit-estado" style="padding:10px 8px;font-size:12px">
@@ -502,19 +502,29 @@ tr:last-child td{border-bottom:none}
           </div>
           <div class="form-group" style="margin:0">
             <label class="form-label">Alquiler ($)</label>
-            <input type="number" class="form-input" id="edit-alquiler" placeholder="400000" inputmode="numeric" style="padding:10px 8px;font-size:12px">
+            <input type="number" class="form-input" id="edit-alquiler" placeholder="400000" inputmode="numeric" style="padding:10px 8px;font-size:12px" oninput="editRecalcTotal()">
           </div>
           <div class="form-group" style="margin:0">
-            <label class="form-label">Deuda ($)</label>
-            <input type="number" class="form-input" id="edit-adeuda" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:12px">
+            <label class="form-label">Luz ($)</label>
+            <input type="number" class="form-input" id="edit-luz" placeholder="45000" inputmode="numeric" style="padding:10px 8px;font-size:12px" oninput="editRecalcTotal()">
           </div>
+        </div>
+        <!-- TOTAL A PAGAR -->
+        <div style="background:rgba(122,158,212,.08);border:1px solid rgba(122,158,212,.2);border-radius:8px;padding:8px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:2px">TOTAL A PAGAR (ALQ + LUZ)</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--accent4)" id="edit-total-display">—</div>
+        </div>
+        <!-- DEUDA -->
+        <div class="form-group" style="margin-bottom:8px">
+          <label class="form-label">Deuda ($) <span style="color:var(--muted);font-size:8px">— se actualiza automático al guardar</span></label>
+          <input type="number" class="form-input" id="edit-adeuda" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:12px">
         </div>
 
         <!-- FILA 2: Cobrado 1 | Destinatario 1 -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <div class="form-group" style="margin:0">
             <label class="form-label">Cobrado 1 ($)</label>
-            <input type="number" class="form-input" id="edit-importe" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:13px" oninput="editAutoDeuda()">
+            <input type="number" class="form-input" id="edit-importe" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:13px" oninput="editRecalcTotal()">
           </div>
           <div class="form-group" style="margin:0">
             <label class="form-label">Destinatario 1</label>
@@ -532,7 +542,7 @@ tr:last-child td{border-bottom:none}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
           <div class="form-group" style="margin:0">
             <label class="form-label">Cobrado 2 ($)</label>
-            <input type="number" class="form-input" id="edit-importe2" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:13px" oninput="editAutoDeuda()">
+            <input type="number" class="form-input" id="edit-importe2" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:13px" oninput="editRecalcTotal()">
           </div>
           <div class="form-group" style="margin:0">
             <label class="form-label">Destinatario 2</label>
@@ -657,8 +667,11 @@ function rDeptosGrid(id,deptos){
         <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--accent2)">↓$${Math.round(imp2/1000)}k</div>
         <div style="font-size:8px;font-family:'DM Mono',monospace;color:${dest2.includes('DANI')?'var(--dani)':dest2.includes('FEDE')?'var(--fede)':dest2.includes('MACHE')?'var(--mache)':dest2.includes('EFECTIVO')?'var(--efectivo)':'var(--muted)'};text-align:right">${dest2||'—'}</div>
       </div>`:''}
-      <!-- OBS -->
-      ${dep.obs?`<div style="font-size:7px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${dep.obs}</div>`:''}
+      <!-- OBS + LUZ -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:3px;margin-top:2px;align-items:end">
+        <div style="font-size:7px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${dep.obs||''}</div>
+        <div style="font-size:7px;font-family:'DM Mono',monospace;color:var(--accent4);text-align:right;line-height:1.2">${typeof dep.luz==='number'&&dep.luz>0?('⚡$'+Math.round(dep.luz/1000)+'k'):''}</div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -928,50 +941,54 @@ function selectDepto(n, mes) {
   editingMes   = mes;
 
   document.getElementById('edit-depto-num').textContent = n;
-
-  // Fila 1
   document.getElementById('edit-estado').value   = dep.estado || '';
   document.getElementById('edit-alquiler').value = typeof dep.alquiler==='number' ? dep.alquiler : '';
+  document.getElementById('edit-luz').value      = typeof dep.luz==='number' && dep.luz > 0 ? dep.luz : '';
+  document.getElementById('edit-importe').value  = typeof dep.importe==='number' && dep.importe > 0 ? dep.importe : '';
+  document.getElementById('edit-importe2').value = typeof dep.importe2==='number' && dep.importe2 > 0 ? dep.importe2 : '';
   document.getElementById('edit-adeuda').value   = (dep.adeuda && dep.adeuda!=='-') ? dep.adeuda : '';
+  document.getElementById('edit-obs').value      = dep.obs || '';
 
-  // Fila 2 — cobrado1 / dest1
-  document.getElementById('edit-importe').value  = typeof dep.importe==='number' && dep.importe>0 ? dep.importe : '';
-  const d1 = (dep.dest||'').toUpperCase();
   const destSel = document.getElementById('edit-dest');
-  if(d1.includes('DANI')) destSel.value='DANI';
-  else if(d1.includes('FEDE')) destSel.value='FEDE';
-  else if(d1.includes('MACHE')) destSel.value='MACHE';
-  else if(d1.includes('EFECTIVO')) destSel.value='EFECTIVO';
+  const d = (dep.dest||'').toUpperCase();
+  if(d.includes('DANI')) destSel.value='DANI';
+  else if(d.includes('FEDE')) destSel.value='FEDE';
+  else if(d.includes('MACHE')) destSel.value='MACHE';
+  else if(d.includes('EFECTIVO')) destSel.value='EFECTIVO';
   else destSel.value='';
 
-  // Fila 3 — cobrado2 / dest2
-  document.getElementById('edit-importe2').value = typeof dep.importe2==='number' && dep.importe2>0 ? dep.importe2 : '';
-  const d2 = (dep.dest2||'').toUpperCase();
-  const destSel2 = document.getElementById('edit-dest2');
-  if(d2.includes('DANI')) destSel2.value='DANI';
-  else if(d2.includes('FEDE')) destSel2.value='FEDE';
-  else if(d2.includes('MACHE')) destSel2.value='MACHE';
-  else if(d2.includes('EFECTIVO')) destSel2.value='EFECTIVO';
-  else destSel2.value='';
+  const dest2Sel = document.getElementById('edit-dest2');
+  if(dest2Sel) {
+    const d2 = (dep.dest2||'').toUpperCase();
+    if(d2.includes('DANI')) dest2Sel.value='DANI';
+    else if(d2.includes('FEDE')) dest2Sel.value='FEDE';
+    else if(d2.includes('MACHE')) dest2Sel.value='MACHE';
+    else if(d2.includes('EFECTIVO')) dest2Sel.value='EFECTIVO';
+    else dest2Sel.value='';
+  }
 
-  // Obs
-  document.getElementById('edit-obs').value = dep.obs || '';
-
+  editRecalcTotal();
   document.getElementById('edit-modal').style.display = 'block';
   loadEstadosGrid();
-  setTimeout(()=>{ document.getElementById('edit-modal').scrollIntoView({behavior:'smooth',block:'start'}); },100);
+  setTimeout(()=>{ document.getElementById('edit-modal').scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
 }
 
-function editAutoDeuda() {
-  // Auto-calcular deuda restante al editar cobrado
-  if(!editingDepto) return;
-  const deudaOriginal = (editingDepto.adeuda && editingDepto.adeuda!=='-') ? (parseInt(editingDepto.adeuda)||0) : 0;
-  if(deudaOriginal === 0) return;
-  const imp1 = parseInt(document.getElementById('edit-importe').value)||0;
-  const imp2 = parseInt(document.getElementById('edit-importe2').value)||0;
-  const totalCobrado = imp1 + imp2;
-  const nuevaDeuda = Math.max(0, deudaOriginal - totalCobrado);
-  document.getElementById('edit-adeuda').value = nuevaDeuda > 0 ? nuevaDeuda : '';
+function editRecalcTotal() {
+  const alq = parseInt(document.getElementById('edit-alquiler')?.value) || 0;
+  const luz = parseInt(document.getElementById('edit-luz')?.value) || 0;
+  const total = alq + luz;
+  const el = document.getElementById('edit-total-display');
+  if(el) el.textContent = total > 0 ? fmtNum(total) : '—';
+  // Auto-update deuda field preview
+  const imp1 = parseInt(document.getElementById('edit-importe')?.value) || 0;
+  const imp2 = parseInt(document.getElementById('edit-importe2')?.value) || 0;
+  const cobrado = imp1 + imp2;
+  const adeudaEl = document.getElementById('edit-adeuda');
+  if(adeudaEl && adeudaEl.value === '' && total > 0) {
+    const nueva = Math.max(0, total - cobrado);
+    // Just show as placeholder so user sees what auto-calc would be
+    adeudaEl.placeholder = nueva > 0 ? String(nueva) : '0 (sin deuda)';
+  }
 }
 
 function guardarEstado() {
@@ -981,25 +998,29 @@ function guardarEstado() {
 
   const nuevoEstado   = document.getElementById('edit-estado').value;
   const nuevoDest     = document.getElementById('edit-dest').value;
+  const nuevoDest2    = document.getElementById('edit-dest2')?.value || '';
   const nuevoImporte  = parseInt(document.getElementById('edit-importe').value)  || 0;
+  const nuevoImporte2 = parseInt(document.getElementById('edit-importe2')?.value) || 0;
   const adeudaField   = document.getElementById('edit-adeuda').value;
   const nuevoAlquiler = parseInt(document.getElementById('edit-alquiler').value) || dep.alquiler;
+  const nuevaLuz      = parseInt(document.getElementById('edit-luz').value) || 0;
   const nuevaObs      = document.getElementById('edit-obs').value;
 
-  // Auto-subtract cobrado from deuda
-  const deudaActual = (dep.adeuda && dep.adeuda !== '-') ? (parseInt(dep.adeuda)||0) : 0;
-  const oldImporte  = typeof dep.importe === 'number' ? dep.importe : 0;
-  const diffCobrado = nuevoImporte - oldImporte;
-
+  // Total a pagar = alquiler + luz
+  const totalAPagar = (typeof nuevoAlquiler==='number' ? nuevoAlquiler : 0) + nuevaLuz;
+  // Total cobrado nuevo
+  const totalCobrado = nuevoImporte + nuevoImporte2;
+  // Deuda: si campo manual → usar ese; sino auto = totalAPagar - totalCobrado
   let nuevaAdeuda;
   if(adeudaField !== '') {
     nuevaAdeuda = parseInt(adeudaField) || 0;
   } else {
-    // auto: restar diferencia de lo cobrado
-    nuevaAdeuda = Math.max(0, deudaActual - Math.max(0, diffCobrado));
+    nuevaAdeuda = Math.max(0, totalAPagar - totalCobrado);
   }
 
-  // Update resumen cobrado if changed
+  // Update resumen cobrado diff
+  const oldCobrado = (typeof dep.importe==='number'?dep.importe:0) + (typeof dep.importe2==='number'?dep.importe2:0);
+  const diffCobrado = totalCobrado - oldCobrado;
   if(diffCobrado !== 0) {
     DATA[editingMes].resumen.cobrado     += diffCobrado;
     DATA[editingMes].resumen.saldoDelMes  = DATA[editingMes].resumen.cobrado - DATA[editingMes].resumen.totalGastos;
@@ -1009,19 +1030,22 @@ function guardarEstado() {
 
   dep.estado   = nuevoEstado || (nuevaAdeuda > 0 ? 'D' : '');
   dep.dest     = nuevoDest;
-  dep.importe  = nuevoImporte > 0 ? nuevoImporte : dep.importe;
+  dep.dest2    = nuevoDest2;
+  dep.importe  = nuevoImporte;
+  dep.importe2 = nuevoImporte2;
   dep.adeuda   = nuevaAdeuda > 0 ? nuevaAdeuda : '-';
   dep.alquiler = nuevoAlquiler;
+  dep.luz      = nuevaLuz > 0 ? nuevaLuz : dep.luz;
   dep.obs      = nuevaObs;
 
   saveData();
-  addHist({tipo:'nota', desc:`Estado ${dep.n} → ${nuevoEstado||'Ocupado'} | Deuda: ${nuevaAdeuda>0?fmtNum(nuevaAdeuda):'saldada'}`, amount:diffCobrado||0, mes:editingMes});
+  addHist({tipo:'nota', desc:`${dep.n}: alq+luz=$${Math.round(totalAPagar/1000)}k cobrado=$${Math.round(totalCobrado/1000)}k deuda=${nuevaAdeuda>0?fmtNum(nuevaAdeuda):'—'}`, amount:diffCobrado||0, mes:editingMes});
 
   cancelarEdicion();
   renderAll();
   showToast(nuevaAdeuda > 0
-    ? `✓ ${dep.n} — Deuda restante: ${fmtNum(nuevaAdeuda)}`
-    : `✓ ${dep.n} actualizado`);
+    ? `✓ ${dep.n} — Deuda: ${fmtNum(nuevaAdeuda)}`
+    : `✓ ${dep.n} — Sin deuda`);
 }
 
 function cancelarEdicion() {
