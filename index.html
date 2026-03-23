@@ -510,11 +510,15 @@ tr:last-child td{border-bottom:none}
           </div>
         </div>
 
-        <!-- FILA 2: Cobrado 1 | Destinatario 1 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <!-- FILA 2: Cobrado 1 | Fecha 1 | Destinatario 1 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
           <div class="form-group" style="margin:0">
             <label class="form-label">Cobrado 1 ($)</label>
             <input type="number" class="form-input" id="edit-importe" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:13px" oninput="editRecalcTotal()">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Fecha 1</label>
+            <input type="date" class="form-input" id="edit-fecha" style="padding:10px 6px;font-size:11px">
           </div>
           <div class="form-group" style="margin:0">
             <label class="form-label">Destinatario 1</label>
@@ -528,11 +532,15 @@ tr:last-child td{border-bottom:none}
           </div>
         </div>
 
-        <!-- FILA 3: Cobrado 2 | Destinatario 2 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <!-- FILA 3: Cobrado 2 | Fecha 2 | Destinatario 2 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
           <div class="form-group" style="margin:0">
             <label class="form-label">Cobrado 2 ($)</label>
             <input type="number" class="form-input" id="edit-importe2" placeholder="0" inputmode="numeric" style="padding:10px 8px;font-size:13px" oninput="editRecalcTotal()">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Fecha 2</label>
+            <input type="date" class="form-input" id="edit-fecha2" style="padding:10px 6px;font-size:11px">
           </div>
           <div class="form-group" style="margin:0">
             <label class="form-label">Destinatario 2</label>
@@ -664,18 +672,20 @@ function rDeptosGrid(id,deptos){
     html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+deudaColor+';line-height:1.2;text-align:right">'+deudaStr+'</div>';
     html+='</div>';
 
-    // ROW 2: cobrado1 | dest1
+    // ROW 2: cobrado1 | fecha | dest1
     if(imp1>0){
-      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">';
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px">';
       html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent2)">↓$'+Math.round(imp1/1000)+'k</div>';
+      html+='<div style="font-size:7px;font-family:\'DM Mono\',monospace;color:var(--muted);text-align:center">'+(dep.fecha||'')+'</div>';
       html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+dClr(dest1)+';text-align:right">'+(dest1||'—')+'</div>';
       html+='</div>';
     }
 
-    // ROW 3: cobrado2 | dest2
+    // ROW 3: cobrado2 | fecha2 | dest2
     if(imp2>0){
-      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">';
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px">';
       html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent2)">↓$'+Math.round(imp2/1000)+'k</div>';
+      html+='<div style="font-size:7px;font-family:\'DM Mono\',monospace;color:var(--muted);text-align:center">'+(dep.fecha2||dep.fecha||'')+'</div>';
       html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+dClr(dest2)+';text-align:right">'+(dest2||'—')+'</div>';
       html+='</div>';
     }
@@ -978,6 +988,11 @@ function selectDepto(n, mes) {
   document.getElementById('edit-alquiler').value = typeof dep.alquiler==='number' ? dep.alquiler : '';
   document.getElementById('edit-luz').value      = typeof dep.luz==='number' && dep.luz > 0 ? dep.luz : '';
   document.getElementById('edit-importe').value  = typeof dep.importe==='number' && dep.importe > 0 ? dep.importe : '';
+  // Convert fecha dd/mm/yyyy to yyyy-mm-dd for date input
+  function toDateInput(f){ if(!f||f==='—')return''; const p=f.split('/'); return p.length===3?p[2]+'-'+p[1]+'-'+p[0]:''; }
+  document.getElementById('edit-fecha').value   = toDateInput(dep.fecha||'');
+  document.getElementById('edit-importe2').value= typeof dep.importe2==='number' && dep.importe2 > 0 ? dep.importe2 : '';
+  document.getElementById('edit-fecha2').value  = toDateInput(dep.fecha2||dep.fecha||'');
   document.getElementById('edit-importe2').value = typeof dep.importe2==='number' && dep.importe2 > 0 ? dep.importe2 : '';
   document.getElementById('edit-adeuda').value   = (dep.adeuda && dep.adeuda!=='-') ? dep.adeuda : '';
   document.getElementById('edit-obs').value      = dep.obs || '';
@@ -1070,6 +1085,12 @@ function guardarEstado() {
   dep.alquiler = nuevoAlquiler;
   dep.luz      = nuevaLuz > 0 ? nuevaLuz : dep.luz;
   dep.obs      = nuevaObs;
+  // Save fechas
+  function fromDateInput(v){ if(!v)return dep.fecha||''; const p=v.split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:''; }
+  const f1 = document.getElementById('edit-fecha')?.value;
+  const f2 = document.getElementById('edit-fecha2')?.value;
+  if(f1) dep.fecha  = fromDateInput(f1);
+  if(f2) dep.fecha2 = fromDateInput(f2);
 
   saveData();
   addHist({tipo:'nota', desc:`${dep.n}: alq+luz=$${Math.round(totalAPagar/1000)}k cobrado=$${Math.round(totalCobrado/1000)}k deuda=${nuevaAdeuda>0?fmtNum(nuevaAdeuda):'—'}`, amount:diffCobrado||0, mes:editingMes});
