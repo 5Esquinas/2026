@@ -634,48 +634,59 @@ function renderAll(){const d=DATA[currentMonth];if(!d)return;rAnalisis(d);rDepto
 function rDeptosGrid(id,deptos){
   const el=document.getElementById(id);
   if(!el)return;
-  el.innerHTML=deptos.map(dep=>{
+  el.innerHTML=deptos.map(function(dep){
     const est=getEstado(dep);
-    const adeudaNum = (dep.adeuda&&dep.adeuda!=='-'&&dep.adeuda>0) ? dep.adeuda : 0;
-    const imp1 = typeof dep.importe==='number'&&dep.importe>0 ? dep.importe : 0;
-    const imp2 = typeof dep.importe2==='number'&&dep.importe2>0 ? dep.importe2 : 0;
-    const dest1 = dep.dest&&dep.dest!=='-' ? dep.dest : '';
-    const dest2 = dep.dest2&&dep.dest2!=='-' ? dep.dest2 : '';
-    const luzVal = typeof dep.luz==='number'&&dep.luz>0 ? dep.luz : 0;
-    const stClr = est.cls==='pagado'?'var(--accent2)':est.cls==='deuda'?'var(--accent3)':'var(--muted)';
-    const dClr = c => c.includes('DANI')?'var(--dani)':c.includes('FEDE')?'var(--fede)':c.includes('MACHE')?'var(--mache)':c.includes('EFECTIVO')?'var(--efectivo)':'var(--muted)';
+    const adeudaNum=(dep.adeuda&&dep.adeuda!=='-'&&dep.adeuda>0)?dep.adeuda:0;
+    const imp1=typeof dep.importe==='number'&&dep.importe>0?dep.importe:0;
+    const imp2=typeof dep.importe2==='number'&&dep.importe2>0?dep.importe2:0;
+    const dest1=dep.dest&&dep.dest!=='-'?dep.dest:'';
+    const dest2=dep.dest2&&dep.dest2!=='-'?dep.dest2:'';
+    const luzVal=typeof dep.luz==='number'&&dep.luz>0?dep.luz:0;
+    const stClr=est.cls==='pagado'?'var(--accent2)':est.cls==='deuda'?'var(--accent3)':'var(--muted)';
+    function dClr(c){return c.includes('DANI')?'var(--dani)':c.includes('FEDE')?'var(--fede)':c.includes('MACHE')?'var(--mache)':c.includes('EFECTIVO')?'var(--efectivo)':'var(--muted)';}
+    const alqStr=typeof dep.alquiler==='number'?('$'+Math.round(dep.alquiler/1000)+'k'):'—';
+    const luzStr=luzVal>0?('⚡$'+Math.round(luzVal/1000)+'k'):'';
+    const deudaStr=adeudaNum>0?('⚠$'+Math.round(adeudaNum/1000)+'k'):'—';
+    const deudaColor=adeudaNum>0?'var(--accent3)':'var(--muted)';
 
-    return \`<div class="depto-card \${est.cls}" onclick="abrirEditorDepto('\${dep.n}','\${currentMonth}')" style="cursor:pointer;padding:8px 7px;">
+    let html='<div class="depto-card '+est.cls+'" onclick="abrirEditorDepto(\''+dep.n+'\',\''+currentMonth+'\')" style="cursor:pointer;padding:8px 7px;">';
 
-      <!-- HEADER: depto | alquiler | luz -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:4px;align-items:center">
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px">\${dep.n}</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:12px;color:var(--text);text-align:center">\${typeof dep.alquiler==='number'?('$'+Math.round(dep.alquiler/1000)+'k'):'—'}</div>
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--accent4);text-align:right">\${luzVal>0?('⚡$'+Math.round(luzVal/1000)+'k'):''}</div>
-      </div>
+    // HEADER: depto | alquiler | luz
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:4px;align-items:center">';
+    html+='<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--muted);letter-spacing:1px">'+dep.n+'</div>';
+    html+='<div style="font-family:\'DM Serif Display\',serif;font-size:12px;color:var(--text);text-align:center">'+alqStr+'</div>';
+    html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent4);text-align:right">'+luzStr+'</div>';
+    html+='</div>';
 
-      <!-- ROW 1: estado | deuda -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px">
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:\${stClr};line-height:1.2">\${est.label}</div>
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:\${adeudaNum>0?'var(--accent3)':'var(--muted)'};line-height:1.2;text-align:right">\${adeudaNum>0?('⚠$'+Math.round(adeudaNum/1000)+'k'):'—'}</div>
-      </div>
+    // ROW 1: estado | deuda
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px">';
+    html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+stClr+';line-height:1.2">'+est.label+'</div>';
+    html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+deudaColor+';line-height:1.2;text-align:right">'+deudaStr+'</div>';
+    html+='</div>';
 
-      <!-- ROW 2: cobrado1 | dest1 -->
-      \${imp1>0?\`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--accent2)">↓$\${Math.round(imp1/1000)}k</div>
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:\${dClr(dest1)};text-align:right">\${dest1||'—'}</div>
-      </div>\`:''}
+    // ROW 2: cobrado1 | dest1
+    if(imp1>0){
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">';
+      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent2)">↓$'+Math.round(imp1/1000)+'k</div>';
+      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+dClr(dest1)+';text-align:right">'+(dest1||'—')+'</div>';
+      html+='</div>';
+    }
 
-      <!-- ROW 3: cobrado2 | dest2 -->
-      \${imp2>0?\`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:var(--accent2)">↓$\${Math.round(imp2/1000)}k</div>
-        <div style="font-size:8px;font-family:'DM Mono',monospace;color:\${dClr(dest2)};text-align:right">\${dest2||'—'}</div>
-      </div>\`:''}
+    // ROW 3: cobrado2 | dest2
+    if(imp2>0){
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px">';
+      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:var(--accent2)">↓$'+Math.round(imp2/1000)+'k</div>';
+      html+='<div style="font-size:8px;font-family:\'DM Mono\',monospace;color:'+dClr(dest2)+';text-align:right">'+(dest2||'—')+'</div>';
+      html+='</div>';
+    }
 
-      <!-- OBS -->
-      \${dep.obs?\`<div style="font-size:7px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${dep.obs}</div>\`:''}
+    // OBS
+    if(dep.obs){
+      html+='<div style="font-size:7px;color:var(--muted);font-family:\'DM Mono\',monospace;margin-top:2px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+dep.obs+'</div>';
+    }
 
-    </div>\`;
+    html+='</div>';
+    return html;
   }).join('');
 }
 
