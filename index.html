@@ -808,15 +808,32 @@ function registrarPago(){
   const dep=DATA[mes].deptos.find(d=>d.n===deptoN);
   if(!dep){showToast('Depto no encontrado',true);return;}
 
-  // Auto-subtract from existing deuda
+  // Deuda = (alquiler + luz) - total cobrado acumulado
+  // Lo que supera alq+luz descuenta la deuda
+  const alqNum = typeof dep.alquiler==='number' ? dep.alquiler : 0;
+  const luzNum = typeof dep.luz==='number' && dep.luz>0 ? dep.luz : 0;
+  const totalAPagar = alqNum + luzNum;
+  // Cobrado anterior (antes de este pago)
+  const cobradoPrevio = (typeof dep.importe==='number'?dep.importe:0) + (typeof dep.importe2==='number'?dep.importe2:0);
+  const totalCobradoAcum = cobradoPrevio + totalPago;
+
   let nuevaAdeuda;
   if(adeudaManual !== '') {
-    // Si llenaron deuda restante manualmente, usar ese valor
     nuevaAdeuda = parseInt(adeudaManual) || 0;
+  } else if(totalAPagar > 0) {
+    // Deuda = lo que falta pagar del total (alq+luz), o si ya cubrió eso, resta deuda existente
+    const deudaExistente = (dep.adeuda && dep.adeuda !== '-') ? (parseInt(dep.adeuda)||0) : 0;
+    if(totalCobradoAcum < totalAPagar) {
+      // No cubrió alq+luz aún
+      nuevaAdeuda = totalAPagar - totalCobradoAcum;
+    } else {
+      // Cubrió alq+luz, el excedente resta la deuda previa
+      const excedente = totalCobradoAcum - totalAPagar;
+      nuevaAdeuda = Math.max(0, deudaExistente - excedente);
+    }
   } else {
-    // Auto: restar lo cobrado de la deuda actual
-    const deudaActual = (dep.adeuda && dep.adeuda !== '-') ? (parseInt(dep.adeuda)||0) : 0;
-    nuevaAdeuda = Math.max(0, deudaActual - totalPago);
+    const deudaExistente = (dep.adeuda && dep.adeuda !== '-') ? (parseInt(dep.adeuda)||0) : 0;
+    nuevaAdeuda = Math.max(0, deudaExistente - totalPago);
   }
 
   // Store parts
