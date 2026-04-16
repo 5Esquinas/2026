@@ -16,7 +16,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .topbar{position:fixed;top:0;left:0;right:0;height:var(--top-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:200;}
 .logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);}
 .topbar-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-left:8px;}
-.month-pills{display:flex;gap:4px;}
+.month-pills{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:220px;scrollbar-width:none;}.month-pills::-webkit-scrollbar{display:none;}
 .month-pill{padding:5px 10px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1px;border-radius:20px;cursor:pointer;color:var(--muted);border:1px solid var(--border);background:none;-webkit-appearance:none;transition:all .15s;}
 .month-pill.active{background:var(--accent);color:#111;border-color:var(--accent);font-weight:500;}
 
@@ -275,6 +275,15 @@ tr:last-child td{border-bottom:none}
     <button class="month-pill" onclick="setMonth('ENERO',this)">ENE</button>
     <button class="month-pill" onclick="setMonth('FEBRERO',this)">FEB</button>
     <button class="month-pill active" onclick="setMonth('MARZO',this)">MAR</button>
+    <button class="month-pill" onclick="setMonth('ABRIL',this)">ABR</button>
+    <button class="month-pill" onclick="setMonth('MAYO',this)">MAY</button>
+    <button class="month-pill" onclick="setMonth('JUNIO',this)">JUN</button>
+    <button class="month-pill" onclick="setMonth('JULIO',this)">JUL</button>
+    <button class="month-pill" onclick="setMonth('AGOSTO',this)">AGO</button>
+    <button class="month-pill" onclick="setMonth('SEPTIEMBRE',this)">SEP</button>
+    <button class="month-pill" onclick="setMonth('OCTUBRE',this)">OCT</button>
+    <button class="month-pill" onclick="setMonth('NOVIEMBRE',this)">NOV</button>
+    <button class="month-pill" onclick="setMonth('DICIEMBRE',this)">DIC</button>
   </div>
 </div>
 
@@ -485,7 +494,16 @@ tr:last-child td{border-bottom:none}
     <div class="admin-section active" id="admin-pagos">
       <div class="summary-mini" id="admin-summary"></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Mes</label><select class="form-select" id="pago-mes" onchange="updateDeptoSelect();updateSummary()"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO" selected>Marzo</option></select></div>
+        <div class="form-group"><label class="form-label">Mes</label><select class="form-select" id="pago-mes" onchange="updateDeptoSelect();updateSummary()"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO" selected>Marzo</option>
+          <option value="ABRIL">Abril</option>
+          <option value="MAYO">Mayo</option>
+          <option value="JUNIO">Junio</option>
+          <option value="JULIO">Julio</option>
+          <option value="AGOSTO">Agosto</option>
+          <option value="SEPTIEMBRE">Septiembre</option>
+          <option value="OCTUBRE">Octubre</option>
+          <option value="NOVIEMBRE">Noviembre</option>
+          <option value="DICIEMBRE">Diciembre</option></select></div>
         <div class="form-group"><label class="form-label">Departamento</label><select class="form-select" id="pago-depto"></select></div>
       </div>
       <div class="form-row">
@@ -545,6 +563,15 @@ tr:last-child td{border-bottom:none}
           <option value="ENERO">Enero</option>
           <option value="FEBRERO">Febrero</option>
           <option value="MARZO" selected>Marzo</option>
+          <option value="ABRIL">Abril</option>
+          <option value="MAYO">Mayo</option>
+          <option value="JUNIO">Junio</option>
+          <option value="JULIO">Julio</option>
+          <option value="AGOSTO">Agosto</option>
+          <option value="SEPTIEMBRE">Septiembre</option>
+          <option value="OCTUBRE">Octubre</option>
+          <option value="NOVIEMBRE">Noviembre</option>
+          <option value="DICIEMBRE">Diciembre</option>
         </select>
       </div>
       <div id="estados-grid-admin"></div>
@@ -641,7 +668,16 @@ tr:last-child td{border-bottom:none}
     </div>
     <!-- GASTOS -->
     <div class="admin-section" id="admin-gastos-adm">
-      <div class="form-group"><label class="form-label">Mes</label><select class="form-select" id="gasto-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO" selected>Marzo</option></select></div>
+      <div class="form-group"><label class="form-label">Mes</label><select class="form-select" id="gasto-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO" selected>Marzo</option>
+          <option value="ABRIL">Abril</option>
+          <option value="MAYO">Mayo</option>
+          <option value="JUNIO">Junio</option>
+          <option value="JULIO">Julio</option>
+          <option value="AGOSTO">Agosto</option>
+          <option value="SEPTIEMBRE">Septiembre</option>
+          <option value="OCTUBRE">Octubre</option>
+          <option value="NOVIEMBRE">Noviembre</option>
+          <option value="DICIEMBRE">Diciembre</option></select></div>
       <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="gasto-tipo" onchange="toggleOtro()"><option value="luz">Luz</option><option value="aysa">AYSA</option><option value="impMuni">Impuestos Municipales</option><option value="limpieza">Limpieza</option><option value="lourdes">Pago a Lourdes</option><option value="gastosFact">Gastos con factura</option><option value="gastosSFact">Gastos sin factura</option><option value="mantenimiento">Mantenimiento</option><option value="devDeposito">Devolución depósito</option><option value="otro">Otro</option></select></div>
       <div class="form-group" id="gasto-otro-wrap" style="display:none"><label class="form-label">Descripción</label><input type="text" class="form-input" id="gasto-otro-desc" placeholder="Descripción..."></div>
       <div class="form-row">
@@ -659,7 +695,16 @@ tr:last-child td{border-bottom:none}
       <div class="form-group" style="margin-top:12px"><label class="form-label">Actualizar alquiler</label><select class="form-select" id="config-depto-alq" style="margin-bottom:8px"></select>
         <div class="form-row">
           <div class="form-group"><label class="form-label">Nuevo alquiler ($)</label><input type="number" class="form-input" id="config-nuevo-alq" placeholder="400000" inputmode="numeric"></div>
-          <div class="form-group"><label class="form-label">Desde mes</label><select class="form-select" id="config-alq-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO" selected>Marzo</option></select></div>
+          <div class="form-group"><label class="form-label">Desde mes</label><select class="form-select" id="config-alq-mes"><option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option><option value="MARZO" selected>Marzo</option>
+          <option value="ABRIL">Abril</option>
+          <option value="MAYO">Mayo</option>
+          <option value="JUNIO">Junio</option>
+          <option value="JULIO">Julio</option>
+          <option value="AGOSTO">Agosto</option>
+          <option value="SEPTIEMBRE">Septiembre</option>
+          <option value="OCTUBRE">Octubre</option>
+          <option value="NOVIEMBRE">Noviembre</option>
+          <option value="DICIEMBRE">Diciembre</option></select></div>
         </div>
         <button class="btn-primary" onclick="actualizarAlquiler()">✓ ACTUALIZAR</button>
       </div>
@@ -788,7 +833,7 @@ function rDeptosGrid(id,deptos){
 
 
 function rAnalisis(d){const r=getResumenReal(d);const vacios=d.deptos.filter(x=>x.estado==='V'||x.estado==='E').length;const deud=d.deptos.filter(x=>x.estado==='D'||(x.adeuda&&x.adeuda!=='-'&&x.adeuda>0)).length;document.getElementById('stats-grid').innerHTML=`<div class="stat-card green"><div class="stat-label">Cobrado</div><div class="stat-value green">${fmtNum(r.cobrado)}</div><div class="stat-meta">ingresos del mes</div></div><div class="stat-card red"><div class="stat-label">Gastos</div><div class="stat-value red">${fmtNum(r.totalGastos)}</div><div class="stat-meta">egresos del mes</div></div><div class="stat-card gold"><div class="stat-label">Saldo</div><div class="stat-value gold">${fmtNum(r.saldoDelMes)}</div><div class="stat-meta">para distribuir</div></div><div class="stat-card blue"><div class="stat-label">Vacíos</div><div class="stat-value blue">${vacios}</div><div class="stat-meta">${deud} con deuda</div></div>`;
-const meses=['ENERO','FEBRERO','MARZO'];
+const meses=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'].filter(m=>DATA[m]);
 const realCobrados=meses.map(m=>{const md=DATA[m];return md?calcSumif(md.deptos,'DANI')+calcSumif(md.deptos,'FEDE')+calcSumif(md.deptos,'MACHE')+calcSumif(md.deptos,'EFECTIVO'):0;});
 const maxV=Math.max(...realCobrados)||1;
 document.getElementById('tri-chart').innerHTML=meses.map(function(m,mi){const mr=DATA[m].resumen;const rc=realCobrados[mi];const eH=Math.round(rc/maxV*80);const sH=Math.round(mr.totalGastos/maxV*80);const lH=Math.round(Math.max(0,rc-mr.totalGastos)/maxV*80);return`<div class="tri-group"><div class="tri-bars-inner"><div class="tri-bar entrada" style="height:${eH}px"></div><div class="tri-bar salida" style="height:${sH}px"></div><div class="tri-bar saldo" style="height:${lH}px"></div></div><div class="tri-mes">${m.substring(0,3)}</div></div>`;}).join('');
@@ -943,7 +988,7 @@ function rGastos(d){
     '<div class="stat-card red"><div class="stat-label">Luz / Edenor</div><div class="stat-value red">'+fmtNum(g.luz||0)+'</div><div class="stat-meta">'+((g.luz||0)/tG*100).toFixed(1)+'% del total</div></div>'+
     '<div class="stat-card gold"><div class="stat-label">Lourdes</div><div class="stat-value gold">'+fmtNum(g.lourdes||0)+'</div><div class="stat-meta">'+((g.lourdes||0)/tG*100).toFixed(1)+'% del total</div></div>';
 
-  const meses=['ENERO','FEBRERO','MARZO'];
+  const meses=Object.keys(DATA);
   const maxG = Math.max(...meses.map(function(m){ return DATA[m].resumen.totalGastos||0; }));
   document.getElementById('gastos-evol').innerHTML = meses.map(function(m){
     const r=DATA[m].resumen;
@@ -1125,7 +1170,7 @@ function rSocios(d){
 
 function rDeudores(d){const r=getResumenReal(d);const deud=d.deptos.filter(dep=>dep.adeuda&&dep.adeuda!=='-'&&dep.adeuda>0);const vac=d.deptos.filter(dep=>dep.estado==='V'||dep.estado==='E');const alD=d.deptos.filter(dep=>getEstado(dep).cls==='pagado');const totD=deud.reduce((s,dep)=>(s+(dep.adeuda||0)),0);document.getElementById('deuda-total-val').textContent=fmtNum(totD);document.getElementById('deuda-dptos-count').textContent=`${deud.length} deptos con deuda`;document.getElementById('vacios-count').textContent=vac.length;document.getElementById('aldia-count').textContent=`${alD.length} al día`;document.getElementById('deudores-list').innerHTML=deud.length?deud.map(dep=>`<div class="deuda-highlight"><div><div class="deuda-hl-num">${dep.n}</div><div class="deuda-hl-alq">Alq: ${fmtNum(dep.alquiler)}</div>${dep.obs?`<div class="deuda-hl-obs">${dep.obs}</div>`:''}</div><div><div class="deuda-hl-amount">${fmtNum(dep.adeuda)}</div><div class="deuda-hl-label">ADEUDA</div></div></div>`).join(''):'<div class="card" style="text-align:center;color:var(--muted);padding:20px">Sin deudores activos</div>';document.getElementById('deudores-tbody').innerHTML=deud.map(dep=>`<tr><td><strong>${dep.n}</strong></td><td style="font-family:'DM Mono',monospace">${fmtNum(dep.alquiler)}</td><td class="deuda-amount">${fmtNum(dep.adeuda)}</td><td class="${dep.importe&&dep.importe>0?'ok-amount':''}">${dep.importe&&dep.importe>0?fmtNum(dep.importe):'—'}</td><td style="font-size:10px;color:var(--muted)">${dep.obs||'—'}</td></tr>`).join('');}
 
-function rTrimestral(){const meses=['ENERO','FEBRERO','MARZO'];document.getElementById('trimestral-meses').innerHTML=meses.map(m=>{const r=DATA[m].resumen;const g=r.gastos;const realCob=calcSumif(DATA[m].deptos,'DANI')+calcSumif(DATA[m].deptos,'FEDE')+calcSumif(DATA[m].deptos,'MACHE')+calcSumif(DATA[m].deptos,'EFECTIVO');
+function rTrimestral(){const meses=Object.keys(DATA);document.getElementById('trimestral-meses').innerHTML=meses.map(m=>{const r=DATA[m].resumen;const g=r.gastos;const realCob=calcSumif(DATA[m].deptos,'DANI')+calcSumif(DATA[m].deptos,'FEDE')+calcSumif(DATA[m].deptos,'MACHE')+calcSumif(DATA[m].deptos,'EFECTIVO');
     return`<div class="mes-card"><div class="mes-header"><div class="mes-name">${m.charAt(0)+m.slice(1).toLowerCase()}</div><div class="mes-total">${fmtNum(realCob)}</div></div><div class="mes-body"><div class="mes-row"><div class="mes-row-label">Gastos</div><div class="mes-row-val" style="color:var(--accent3)">${fmtNum(r.totalGastos)}</div></div><div class="mes-row"><div class="mes-row-label">Saldo</div><div class="mes-row-val" style="color:var(--accent)">${fmtNum(r.saldoDelMes)}</div></div><div class="mes-row"><div class="mes-row-label">Luz</div><div class="mes-row-val">${fmtNum(g.luz)}</div></div><div class="mes-row"><div class="mes-row-label">AYSA</div><div class="mes-row-val">${fmtNum(g.aysa)}</div></div><div class="mes-row"><div class="mes-row-label">Imp. Muni</div><div class="mes-row-val">${fmtNum(g.impMuni)}</div></div><div class="mes-row"><div class="mes-row-label">Limpieza</div><div class="mes-row-val">${fmtNum(g.limpieza)}</div></div><div class="mes-row"><div class="mes-row-label">Lourdes</div><div class="mes-row-val">${fmtNum(g.lourdes)}</div></div></div></div>`;}).join('');const socios=['DANIEL','FEDERICO','MARCELO'];const cols={DANIEL:'var(--dani)',FEDERICO:'var(--fede)',MARCELO:'var(--mache)'};document.getElementById('trim-socios-tbody').innerHTML=socios.map(s=>{const socioKey=s==='DANIEL'?'DANI':s==='FEDERICO'?'FEDE':'MACHE';
     const cobradoPorMes=meses.map(function(m){return DATA[m]?calcSumif(DATA[m].deptos,socioKey):0;});
     const totC=cobradoPorMes.reduce(function(a,b){return a+b;},0);
@@ -1578,4 +1623,391 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 </body>
-</html>
+</html>,
+  ABRIL: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  MAYO: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  JUNIO: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  JULIO: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  AGOSTO: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  SEPTIEMBRE: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  OCTUBRE: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  NOVIEMBRE: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  },
+  DICIEMBRE: {
+    resumen: {
+      cobrado: 0,
+      gastos: {luz:0,aysa:0,impMuni:0,limpieza:0,lourdes:0,gastosFact:0,gastosSFact:0,mantenimiento:0,devDeposito:0,saldoCaja:0,alquilerFede:0,internetFede:0},
+      otros: {alquilerFede:0,internetFede:0},
+      saldoDelMes: 0,
+      totalGastos: 0,
+      liq: {
+        DANIEL:   {liq:0,cobrado:0,resto:0},
+        FEDERICO: {liq:0,cobrado:0,resto:0},
+        MARCELO:  {liq:0,cobrado:0,resto:0}
+      }
+    },
+    deptos: [
+      {n:'C4',alquiler:400000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C6',alquiler:280000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C8',alquiler:300000,luz:45000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C9',alquiler:300000,luz:40000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C10',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C11',alquiler:400000,luz:30000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'C12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A4',alquiler:400000,luz:15000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A5',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A6',alquiler:280000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A7',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A8',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A9',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A10',alquiler:300000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A11',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A12',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A14',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A15',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A17',alquiler:400000,luz:0,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A18',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A19',alquiler:400000,luz:65000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A21',alquiler:380000,luz:69000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A22',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A23',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''},
+      {n:'A24',alquiler:400000,luz:60000,fecha:'',importe:0,importe2:0,adeuda:'-',dest:'',dest2:'',obs:'',estado:''}
+    ]
+  }
